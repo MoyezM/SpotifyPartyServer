@@ -8,6 +8,7 @@ console.log('Listening on 8888');
 
 const queue= [];
 
+// Finds songs in the queue
 let findSong = (songArray, uri) => {
   if (!songArray) {
     return -1;
