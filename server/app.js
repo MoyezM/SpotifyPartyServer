@@ -80,6 +80,9 @@ io.on('connection', (socket) => {
     console.log(queue[index]);
     queue[index].votes = queue[index].votes + voteData.vote;
     console.log(queue[index]);
+    queue.sort((a, b) => {
+      return b.votes - a.votes
+    })
     updateQueue(queue);
   })
 })
