@@ -107,23 +107,29 @@ io.on('connection', (socket) => {
   })
 
   socket.on('previous', (currentSong) => {
-    queue.unshift(currentSong);
-    queue.sort((a, b) => {
-      return b.votes - a.votes
-    })
-    const newSong = previousQueue.shift()
-    playSong(newSong);
-    updateQueue(queue)
+    if (previousQueue.length){
+      queue.unshift(currentSong);
+      queue.sort((a, b) => {
+        return b.votes - a.votes
+      })
+      const newSong = previousQueue.shift()
+      playSong(newSong);
+      updateQueue(queue)
+    }
+   
   });
 
   socket.on('next', (currentSong) => {
-    previousQueue.unshift(currentSong);
-    console.log(previousQueue);
-    const newSong = queue.shift();
-    queue.sort((a, b) => {
-      return b.votes - a.votes
-    })
-    playSong(newSong);
-    updateQueue(queue);
+    if (queue.length) {
+      previousQueue.unshift(currentSong);
+      console.log(previousQueue);
+      const newSong = queue.shift();
+      queue.sort((a, b) => {
+        return b.votes - a.votes
+      })
+      playSong(newSong);
+      updateQueue(queue);
+    }
+    
   });
 });
