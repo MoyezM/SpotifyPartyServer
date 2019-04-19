@@ -7,8 +7,9 @@ app.use('/', auth)
 console.log('Listening on 8888');
 
 // The queue of songs for the app
-const queue= [];
+const queue = [];
 const previousQueue = [];
+let playingSong = '';
 
 // Returns the index of a song in an array
 // of songs based on the uri
@@ -107,12 +108,18 @@ io.on('connection', (socket) => {
   })
 
   socket.on('previous', (currentSong) => {
-    if (previousQueue.length){
-      queue.unshift(currentSong);
+    if (previousQueue.length > 1) {
+      let song = '';
+      if (!currentSong) {
+        song = currentSong;
+      }
+      song = playingSong;
+      queue.unshift(song);
       queue.sort((a, b) => {
         return b.votes - a.votes
       })
       const newSong = previousQueue.shift()
+      playingSong = newSong;
       playSong(newSong);
       updateQueue(queue)
     }
@@ -120,14 +127,22 @@ io.on('connection', (socket) => {
   });
 
   socket.on('next', (currentSong) => {
+    // console.log(queue);
+    // console.log('----------------------')
+    // console.log(previousQueue);
     if (queue.length) {
-      previousQueue.unshift(currentSong);
-      console.log(previousQueue);
+      let song = '';
+      if (!currentSong) {
+        song = currentSong;
+      }
+      song = playingSong;
+      previousQueue.unshift(song);
       const newSong = queue.shift();
       queue.sort((a, b) => {
         return b.votes - a.votes
       })
       playSong(newSong);
+      playingSong = newSong;
       updateQueue(queue);
     }
     
